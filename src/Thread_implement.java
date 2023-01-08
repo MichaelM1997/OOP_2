@@ -13,6 +13,7 @@ public class Thread_implement extends Thread {
         }
 
         public int getLines() {
+
             return lines;
         }
 

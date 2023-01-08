@@ -8,10 +8,12 @@ public class Callable_implement implements Callable<Integer> {
         private String fileName;
 
         public Callable_implement(String fileName) {
+
             this.fileName = fileName;
         }
 
-        @Override
+
+    @Override
         public Integer call() {
             int lines = 0;
             try {

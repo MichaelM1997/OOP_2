@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Ex2_1 {
