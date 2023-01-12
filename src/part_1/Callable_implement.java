@@ -1,24 +1,23 @@
+package part_1;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.*;
 
-public class Thread_implement extends Thread {
+public class Callable_implement implements Callable<Integer> {
 
         private String fileName;
-        private int lines;
 
-        public Thread_implement(String fileName) {
+        public Callable_implement(String fileName) {
+
             this.fileName = fileName;
-            this.lines = 0;
         }
 
-        public int getLines() {
 
-            return lines;
-        }
-
-        @Override
-        public void run() {
+    @Override
+        public Integer call() {
+            int lines = 0;
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(fileName));
                 while (reader.readLine() != null) {
@@ -28,6 +27,7 @@ public class Thread_implement extends Thread {
                 System.out.println("ERROR");
                 e.printStackTrace();
             }
+            return lines;
         }
     }
 
