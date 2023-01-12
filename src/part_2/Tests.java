@@ -1,79 +1,12 @@
 package part_2;
 
 import org.junit.Test;
-
-
 import java.util.concurrent.*;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 public class Tests {
     public static final Logger logger = LoggerFactory.getLogger(Tests.class);
-
-    /**
-     * This test method creates a new instance of the CustomExecutor class and creates
-     * two Callable objects that simulate long-running tasks.
-     * The test then submits half of the tasks with a TaskType.OTHER priority,
-     * and the other half with a TaskType.COMPUTATIONAL priority.
-     * This test is checking that the CustomExecutor is able to schedule
-     * the task based on their priority with TaskType.OTHER being less important,
-     * and TaskType.COMPUTATIONAL more important, and this can be observed by
-     * checking the priority value of each element in the queue.
-     *
-     * In short the more important tasks overtook the lees important tasks!
-     */
-    @Test
-    public void testPriority(){
-        CustomExecutor customExecutor = new CustomExecutor();
-
-        Callable<String> callable1 = ()-> {
-            //simulating long task
-            Thread.sleep(1000);
-            StringBuilder sb = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            return sb.reverse().toString();
-        };
-
-        Callable<Integer> callable2 = ()-> {
-            //simulating long task
-            Thread.sleep(1000);
-            int sum = 0;
-            for (int i = 1; i <= 10; i++) {
-                sum += i;
-            }
-            return sum;
-        };
-
-        // Create an array to store the Future of the tasks in a const size
-        Future<?>[] stringFuture = new Future[20];
-        for (int i = 0; i < stringFuture.length; i++) {
-            // Insert the less important tasks first
-            if (i <= stringFuture.length/2)
-                stringFuture[i] = customExecutor.submit(callable1, TaskType.OTHER);
-                // Insert the more important tasks in the end
-            else
-                stringFuture[i] = customExecutor.submit(callable2, TaskType.COMPUTATIONAL);
-        }
-        //log the priority of each task in the queue
-        Object[] array = customExecutor.getQueue().toArray();
-        for (int i = 0; i < customExecutor.getQueue().size(); i++) {
-            int finalI = i;
-            Object[] finalArray1 = array;
-            logger.info(()-> "The "+ finalI +"t'h element in the queue has priority of "+((MyTaskAdapter<?>) finalArray1[finalI]).getPrr());
-        }
-
-        // Sleep for 2 sec and check again the queue status
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ignored) {
-        }
-        array = customExecutor.getQueue().toArray();
-        for (int i = 0; i < customExecutor.getQueue().size(); i++) {
-            int finalI = i;
-            Object[] finalArray = array;
-            logger.info(()-> "The "+ finalI +"t'h element in the queue after sleep, has priority of "+((MyTaskAdapter<?>) finalArray[finalI]).getPrr());
-        }
-        customExecutor.gracefullyTerminate();
-    }
 
     @Test
     public void partialTest(){
@@ -120,83 +53,57 @@ public class Tests {
         customExecutor.gracefullyTerminate();
     }
 
-    @org.junit.jupiter.api.Test
-    public void Tests2() {
+    @Test
+    public void testPriority(){
         CustomExecutor customExecutor = new CustomExecutor();
 
-        for (int i = 0; i < 100; ++i)
-        {
-            Callable<Double> callable1 = () -> {
-                return 1000 * Math.pow(1.02, 5);
-            };
+        Callable<String> callable_1 = ()-> {
+            Thread.sleep(1000);
+            StringBuilder sb = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            return sb.reverse().toString();
+        };
 
-            Callable<String> callable2 = () -> {
-                StringBuilder sb = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-                return sb.reverse().toString();
-            };
-
-            customExecutor.submit(() -> {
-                return 1000 * Math.pow(1.02, 5);
-            }, TaskType.COMPUTATIONAL);
-
-            customExecutor.submit(callable1, TaskType.OTHER);
-
-            customExecutor.submit(callable2, TaskType.IO);
-
-            System.out.println(customExecutor);
-        }
-
-        System.out.println(customExecutor);
-        customExecutor.gracefullyTerminate();
-
-    }
-
-    @org.junit.jupiter.api.Test
-    public void Tests3() {
-        CustomExecutor customExecutor = new CustomExecutor();
-
-        for (int i = 0; i < 1000; ++i)
-        {
-            int finalI = i;
-            Callable<Integer> callable1 = () -> {
-                return finalI;
-            };
-
-            int rnd = (int)(Math.random() * 3);
-
-            switch (rnd)
-            {
-                case 0:
-                {
-                    customExecutor.submit(callable1, TaskType.COMPUTATIONAL);
-                    customExecutor.submit(callable1, TaskType.IO);
-                    customExecutor.submit(callable1, TaskType.OTHER);
-                    break;
-                }
-
-                case 1:
-                {
-                    customExecutor.submit(callable1, TaskType.IO);
-                    customExecutor.submit(callable1, TaskType.COMPUTATIONAL);
-                    customExecutor.submit(callable1, TaskType.OTHER);
-                    break;
-                }
-
-                case 2:
-                {
-                    customExecutor.submit(callable1, TaskType.OTHER);
-                    customExecutor.submit(callable1, TaskType.COMPUTATIONAL);
-                    customExecutor.submit(callable1, TaskType.IO);
-                    break;
-                }
+        Callable<Integer> callable_2 = ()-> {
+            Thread.sleep(1000);
+            int sum = 0;
+            for (int i = 1; i <= 10; i++) {
+                sum += i;
             }
+            return sum;
+        };
 
-            logger.info(()-> customExecutor.toString());
+        Future<?>[] stringFuture = new Future[20];
+        for (int i = 0; i < stringFuture.length; i++) {
+            if (i <= stringFuture.length/2)
+                stringFuture[i] = customExecutor.submit(callable_1, TaskType.OTHER);
+            else
+                stringFuture[i] = customExecutor.submit(callable_2, TaskType.COMPUTATIONAL);
         }
 
-        logger.info(()-> customExecutor.toString());
+        Object[] array = customExecutor.getQueue().toArray();
+        for (int i = 0; i < customExecutor.getQueue().size(); i++) {
+            int finalI = i;
+            Object[] finalArray1 = array;
+            logger.info(()-> "The "+ finalI +"t'h element has priority of "+((MyTaskAdapter<?>) finalArray1[finalI]).getPrr());
+        }
+        logger.info(()-> "Current max priority = " + customExecutor.getCurrentMax());
+
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException ignored) {
+        }
+        array = customExecutor.getQueue().toArray();
+        for (int i = 0; i < customExecutor.getQueue().size(); i++) {
+            int finalI = i;
+            Object[] finalArray = array;
+            logger.info(()-> "The "+ finalI +"t'h element after sleep, has priority of "+((MyTaskAdapter<?>) finalArray[finalI]).getPrr());
+        }
+        logger.info(()-> "Current max priority = " + customExecutor.getCurrentMax());
+
         customExecutor.gracefullyTerminate();
     }
+
+
 }
 
 
