@@ -38,6 +38,8 @@ are useful when you need to create a fixed number of threads to execute a large 
 In our case we can see that there is no much differences between thread and thread pool.
 
 ### Class diagram
+![Screenshot (2)](https://user-images.githubusercontent.com/117936442/212131816-a8550370-e6c2-43f0-86e8-9805b4382577.png)
+
 
 
 ## Part_2
@@ -78,6 +80,7 @@ which compares this task to the specified object. This class is used as a adapte
 it to be used in the priority queue in the thread pool.
 
 ### Class diagram
+![Screenshot (3)](https://user-images.githubusercontent.com/117936442/212134825-6e71f42d-86d1-4880-a1e4-f8df2d4ec1db.png)
 
 
 
