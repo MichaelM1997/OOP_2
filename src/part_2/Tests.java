@@ -54,7 +54,7 @@ public class Tests {
     }
 
     @Test
-    public void testPriority(){
+    public void test(){
         CustomExecutor customExecutor = new CustomExecutor();
 
         Callable<String> callable_1 = ()-> {
